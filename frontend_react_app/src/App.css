@@ -1,104 +1,524 @@
-/* CSS Variables for Theme Management */
 :root {
-  /* Light theme colors */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --text-primary: #282c34;
-  --text-secondary: #61dafb;
-  --border-color: #e9ecef;
-  --button-bg: #007bff;
-  --button-text: #ffffff;
+  --primary: #ff4df0;
+  --secondary: #ffffff;
+  --accent: #be2778;
+  --shadow: 0 2px 14px rgba(190, 39, 120, 0.14);
+  --success: #43e43c;
+  --fail: #ff5b6d;
+  --radius: 22px;
+  --card-bg: #fff9fe;
+  --border: #ecd8e4;
+  --text: #282c34;
+  --muted: #818194;
+  --leader-glow: 0 0 32px 0 #ff4df0b9;
 }
 
-[data-theme="dark"] {
-  /* Dark theme colors */
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #282c34;
-  --text-primary: #ffffff;
-  --text-secondary: #61dafb;
-  --border-color: #404040;
-  --button-bg: #0056b3;
-  --button-text: #ffffff;
+/* Reset/Global */
+body {
+  background: var(--secondary);
+  font-family: "Segoe UI Emoji", "Segoe UI", "Arial", "Roboto", "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 0;
+  color: var(--text);
+  min-height: 100vh;
 }
 
 .App {
   text-align: center;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  position: relative;
+  background: var(--secondary);
+  display: flex;
+  flex-direction: column;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.logo-title {
+  font-weight: 700;
+  font-size: 2.1rem;
+  letter-spacing: -1px;
+  margin-bottom: 5px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: var(--bg-secondary);
-  min-height: 100vh;
+.dashboard-header {
+  padding: 26px 9vw 6px 9vw;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.user-greeting {
+  color: var(--muted);
+  font-size: 1.15rem;
+  margin-bottom: 24px;
+}
+
+/* FAB - Add Drawing */
+.fab {
+  position: fixed;
+  bottom: 36px;
+  right: 36px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  padding: 0 0;
+  width: 64px;
+  height: 64px;
+  font-size: 2.3em;
+  border-radius: 100%;
+  box-shadow: var(--shadow);
+  z-index: 30;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(.42,0,.58,1.09), box-shadow 0.3s;
+}
+.fab:hover {
+  transform: scale(1.09);
+  box-shadow: 0 4px 20px 4px #ff4df050;
+}
+.fab:active {
+  transform: scale(0.95);
+}
+.fab-emoji {
+  filter: drop-shadow(0 0 7px var(--accent));
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  background: rgba(29, 0, 35, 0.39);
+  position: fixed;
+  z-index: 999;
+  inset: 0;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease;
+  animation: fadein-modal 0.19s;
+}
+@keyframes fadein-modal {
+  from { opacity:0; }
+  to { opacity:1;}
+}
+
+/* Drawing Modal (canvas) */
+.drawing-modal {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 2vw 3vw;
+  min-width: 380px;
+  box-shadow: 0px 10px 42px 2px #e991c230;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 11;
+}
+
+.drawing-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 7px;
+}
+
+.animal-prompt {
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  font-size: 1.3rem;
+  display: flex;
+  align-items:center;
+}
+
+.timer {
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 10px;
+  padding: 3px 18px;
+  font-size: 1.15rem;
+  margin-left: 8px;
+  box-shadow: 0 2px 6px #ff4df02b;
+  letter-spacing: 1px;
+}
+
+.drawing-canvas {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 12px 2px #be27781b;
+  margin: 18px 0 12px 0;
+  touch-action: none;
+  width: 350px;
+  height: 320px;
+}
+
+.drawing-actions {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+/* Drawing Modal: Buttons */
+.btn-primary, .btn-secondary {
+  border-radius: 14px;
+  padding: 11px 29px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  margin: 0 5px;
+  box-shadow: 0 1px 10px 0 #be277815;
+  background: var(--primary);
+  color: #fff;
+  transition: transform 0.15s, box-shadow 0.3s, background 0.18s;
+}
+.btn-primary:hover {
+  background: var(--accent);
+  transform: translateY(-2px) scale(1.02);
+}
+.btn-secondary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-secondary:hover {
+  background: var(--primary);
+}
+
+/* Spinner Modal for animal prompt */
+.spinner-modal {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 45px 40px 36px 40px;
+  text-align: center;
+  z-index: 12;
+}
+.spinner-label {
+  font-size: 1.13rem;
+  margin-bottom: 9px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.spinner-display {
+  border: 3px dashed var(--accent);
+  border-radius: 20px;
+  background: #fff5fc;
+  padding: 21px 38px 13px 38px;
+  margin: 0 auto;
+}
+.animal-emoji {
+  font-size: 63px;
+  display: block;
+  margin-bottom: 12px;
+}
+.animal-name {
+  font-size: 1.43rem;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Drawing Preview Modal */
+.drawing-preview-modal {
+  background: var(--card-bg);
+  box-shadow: 0 2px 30px 10px #be277815;
+  padding: 2vw 2vw 1.2vw 2vw;
+  border-radius: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 370px;
+}
+.drawing-modal-img {
+  width: 330px;
+  border-radius: 17px;
+  box-shadow: 0 2px 20px 0 #be277825;
+  margin-bottom: 20px;
+}
+
+.leader-highlight {
+  margin: 13px auto 22px auto;
+  max-width: 470px;
+  border-radius: 25px;
+  background: linear-gradient(98deg, #fff2fd 67%, #fff7fc 100%);
+  padding: 17px 2vw 21px;
+  box-shadow: var(--leader-glow);
+  border:2px solid var(--primary);
+  transition: box-shadow .3s;
+}
+.leader-label {
+  font-size: 1.06rem;
+  margin-bottom: 3px;
+  letter-spacing: .7px;
+  font-weight: 600;
+  color: var(--primary);
+  text-align: left;
+}
+
+.drawings-section {
+  width: 95vw;
+  max-width: 1200px;
+  margin: 0 auto 70px auto;
+}
+
+.drawings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(304px, 1fr));
+  grid-gap: 22px 28px;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .drawings-section {
+    width: 100vw;
+    padding: 0 1vw;
+  }
+  .leader-highlight{ max-width:97vw; }
+}
+
+@media (max-width: 600px) {
+  .drawings-grid { grid-gap: 14px 0px; }
+}
+
+.empty-tip {
+  color: var(--muted);
+  font-size: 1rem;
+  margin: 40px 0 14px;
+}
+
+.drawing-card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 16px 16px 10px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  transition: box-shadow .21s, border .18s;
   position: relative;
 }
-
-.App-link {
-  color: var(--text-secondary);
-  transition: color 0.3s ease;
+.drawing-card.highlight {
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px 0 #be27785f;
+  animation: pulse-card .33s;
+}
+@keyframes pulse-card {
+  0% { box-shadow: none }
+  40% { box-shadow: 0 8px 25px 8px #be277835;}
+  100% { }
+}
+.drawing-card.leader {
+  border-color: var(--primary);
+  box-shadow: 0 3px 32px 0 #ff4df095;
+  z-index: 2;
 }
 
-.theme-toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: var(--button-bg);
-  color: var(--button-text);
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 14px;
+.drawing-img-wrap {
+  border-radius: 16px;
+  overflow: hidden;
+  cursor:pointer;
+  box-shadow: 0 1px 12px 0 #be277813;
+  margin-bottom: 8px;
+  transition: box-shadow 0.16s;
+}
+.drawing-img-wrap:hover {
+  box-shadow: 0 4px 16px 1px #be27782c;
+}
+.drawing-img {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  display:block;
+  background: #f8f8fa;
+}
+
+.drawing-author, .drawing-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 1rem;
+}
+.drawing-username {
   font-weight: 600;
+  color: var(--accent);
+  font-size: 1.04em;
+}
+.drawing-date {
+  color: var(--muted);
+  font-size: 0.97em;
+}
+.drawing-stats {
+  font-size: 1.03em;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.guess-form {
+  display: flex;
+  gap: 7px;
+  margin-top: 2px;
+}
+.guess-input {
+  border-radius: 12px;
+  border: 2px solid #ebd8ef;
+  font-size: 1rem;
+  outline: none;
+  padding: 9px 16px;
+  width: 60%;
+  max-width: 180px;
+  font-family: inherit;
+  box-shadow: 0 1px 10px 0 #be27782e;
+  margin-right: 3px;
+  transition: border 0.18s, box-shadow 0.16s;
+}
+.guess-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 4px 18px 0 #be27780d;
+}
+.btn-secondary {
+  border-radius: 12px;
+  padding: 9px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: var(--accent);
+  color: #fff;
+  transition: background 0.16s;
+}
+.btn-secondary:hover {
+  background: var(--primary);
+}
+.guess-success {
+  margin: 8px 0 3px 0;
+  color: var(--success);
+  font-weight: 600;
+}
+.guess-wrong {
+  margin: 3px 0 0 0;
+  color: var(--fail);
+  font-weight: 600;
+  animation: shake 0.25s;
+}
+@keyframes shake {
+  0% {transform:translateX(0)}
+  23%{transform:translateX(-3px)}
+  51%{transform:translateX(6px)}
+  77%{transform:translateX(-2px)}
+  100%{transform:translateX(0)}
+}
+.highlighted {
+  color: var(--primary);
+  font-weight: 700;
+}
+.public-guesses-list {
+  margin-top: 8px;
+  text-align: left;
+}
+.public-guess {
+  font-size: .98em;
+  background: #ffe5f65b;
+  border-radius: 8px;
+  padding: 3px 8px 3px 5px;
+  margin-bottom: 3px;
+  display: inline-block;
 }
 
-.theme-toggle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  opacity: 0.9;
+.footer {
+  width: 100%;
+  padding: 16px 0 8px 0;
+  text-align: center;
+  background: transparent;
+  font-size: 1.08rem;
+  margin-top: auto;
 }
 
-.theme-toggle:active {
-  transform: translateY(0);
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media (max-width: 570px) {
+  .drawing-modal, .drawing-preview-modal, .spinner-modal {
+    min-width: 94vw !important;
+    max-width:97vw;
+    padding: 1.6vw 1vw 2vw 1vw;
   }
-  to {
-    transform: rotate(360deg);
+  .drawing-canvas, .drawing-modal-img {
+    width: 93vw !important;
+    min-width: 98vw;
+    height: 180px !important;
   }
 }
 
-/* Responsive design for mobile */
-@media (max-width: 768px) {
-  .theme-toggle {
-    top: 10px;
-    right: 10px;
-    padding: 8px 16px;
-    font-size: 12px;
+
+/* Login UX */
+.login-backdrop {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(115deg, #ff4df034 7%, #be277870 96%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 90;
+}
+.login-form {
+  background: var(--card-bg);
+  border-radius: 22px;
+  box-shadow: 0 3px 42px 2px #debee845;
+  min-width: 340px;
+  padding: 34px 30px 39px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.login-label {
+  font-size: 1.08rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 5px;
+  margin-left: 1px;
+}
+.small {
+  font-size: 0.9em;
+  color: var(--muted);
+}
+.login-input {
+  font-size: 1.13rem;
+  border-radius: 10px;
+  border: 2px solid var(--primary);
+  padding: 10px 18px;
+  outline: none;
+  margin-bottom: 12px;
+  margin-top: 1px;
+  transition: border 0.2s;
+}
+.login-input:focus {
+  border: 2px solid var(--accent);
+}
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--accent);
+}
+.disclaimer {
+  margin-top:12px;
+  color: var(--muted);
+  font-size: .99em;
+  text-align: center;
+}
+.error {
+  color: var(--fail);
+  font-size: 1.09em;
+  margin-bottom: 6px;
+}
+
+
+
+/* Animations & transitions */
+@media (hover: hover) {
+  .drawing-card:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 6px 20px 0 #ff4df032;
   }
 }

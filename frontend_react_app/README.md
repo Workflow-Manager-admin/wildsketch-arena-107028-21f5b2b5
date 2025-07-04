@@ -29,17 +29,37 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 ## Customization
 
+### Firebase Configuration
+
+This React app relies on Firebase for authentication, database, and storage. **Your API/config secrets are not to be hardcoded in production.**
+
+- Configuration is read from environment variables. You must provide these in a `.env` file or via your build pipeline.
+- **The values should be obtained securely from Supabase-secrets as per `assets/supabase.md`.**
+
+Required environment variables:
+
+```
+REACT_APP_FIREBASE_API_KEY=...
+REACT_APP_FIREBASE_AUTH_DOMAIN=...
+REACT_APP_FIREBASE_PROJECT_ID=...
+REACT_APP_FIREBASE_STORAGE_BUCKET=...
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=...
+REACT_APP_FIREBASE_APP_ID=...
+REACT_APP_FIREBASE_MEASUREMENT_ID=...
+```
+
+Do **not** check these credentials into source control.
+
 ### Colors
 
 The main brand colors are defined as CSS variables in `src/App.css`:
 
 ```css
 :root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
+  --primary: #ff4df0;
+  --secondary: #ffffff;
+  --accent: #be2778;
+  /* ...other theme vars... */
 }
 ```
 
