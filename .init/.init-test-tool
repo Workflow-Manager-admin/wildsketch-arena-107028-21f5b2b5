@@ -1,0 +1,4 @@
+{
+    "command": "npm run test",
+    "working_directory": "/home/kavia/workspace/code-generation/wildsketch-arena-107028-21f5b2b5/frontend_react_app"
+}
